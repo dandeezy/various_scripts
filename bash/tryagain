@@ -6,8 +6,7 @@
 # Declare Vars and defaults: 
 PAUSESECONDS=60
 COMMAND=""
-VERBOSE=false
-TS=$(date '+%F +%H:%M:%S')
+VERBOSE=0
 
 # Argument Parsing
 while (( "$#" )); do
@@ -17,7 +16,7 @@ while (( "$#" )); do
       shift 2
       ;;
     -v|--verbose)
-      VERBOSE=true
+      VERBOSE=1
       shift 1
       ;;
     --) # end argument parsing
@@ -39,11 +38,12 @@ done
 # Do the dance
 while true; do 
   eval "${COMMAND:-}" 2>/dev/null && break; 
-  sleep "${PAUSESECONDS:-60}";
-  if [ "${VERBOSE:-false}" ]; then 
+  if [ "${VERBOSE:-0}" == 1 ]; then 
     echo Your command:"$COMMAND" Failed! Trying again in "$PAUSESECONDS" seconds ...
   fi;
+  sleep "${PAUSESECONDS:-60}";
 done; 
 
 # Congratulate yo'self
+TS=$(date)
 echo "Successfully executed \"$COMMAND\" at $TS. Enjoy!" 
